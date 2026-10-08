@@ -1,5 +1,6 @@
 package com.apklachy.app.data
 
+import com.apklachy.app.util.Marcas
 import kotlinx.coroutines.flow.Flow
 
 data class Estadisticas(
@@ -35,8 +36,14 @@ class Repositorio(private val dao: ReparacionDao) {
         return Estadisticas(
             total = total.total,
             cantidad = total.cantidad,
-            marcas = dao.marcasEnPeriodo(desde, hasta),
+            marcas = agruparPorMarca(dao.marcasEnPeriodo(desde, hasta)),
             tipos = dao.tiposEnPeriodo(desde, hasta)
         )
     }
+
+    private fun agruparPorMarca(conteos: List<Conteo>): List<Conteo> =
+        conteos
+            .groupBy { Marcas.marcaDe(it.valor) }
+            .map { (marca, lista) -> Conteo(marca, lista.sumOf { it.cantidad }) }
+            .sortedWith(compareByDescending<Conteo> { it.cantidad }.thenBy { it.valor })
 }

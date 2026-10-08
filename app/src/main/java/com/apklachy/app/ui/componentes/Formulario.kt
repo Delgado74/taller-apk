@@ -38,15 +38,14 @@ fun CampoMarca(
     modifier: Modifier = Modifier
 ) {
     var expandido by remember { mutableStateOf(false) }
-    val sugerencias = remember(valor) {
-        val texto = valor.trim()
-        val lista = if (texto.isEmpty()) {
-            Marcas.POPULARES
-        } else {
-            Marcas.TODAS.filter { it.contains(texto, ignoreCase = true) }
-        }
-        lista.take(8)
+    val interaccion = remember { MutableInteractionSource() }
+    val presionado by interaccion.collectIsPressedAsState()
+
+    LaunchedEffect(presionado) {
+        if (presionado) expandido = true
     }
+
+    val sugerencias = remember(valor) { Marcas.buscar(valor) }
 
     Box(modifier = modifier.fillMaxWidth()) {
         OutlinedTextField(
@@ -58,6 +57,13 @@ fun CampoMarca(
             label = { Text(stringResource(R.string.campo_marca)) },
             isError = error,
             singleLine = true,
+            interactionSource = interaccion,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = null
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged { estado ->
