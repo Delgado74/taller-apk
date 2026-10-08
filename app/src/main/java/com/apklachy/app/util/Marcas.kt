@@ -387,9 +387,4 @@ object Marcas {
         val resto = coincide.filterNot { it in prefijo }
         return (prefijo + resto).take(10)
     }
-
-    fun marcaDe(entrada: String): String {
-        val limpio = entrada.trim()
-        return limpio.split(Regex("\\s+")).firstOrNull { it.isNotEmpty() }.orEmpty()
-    }
 }

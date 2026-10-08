@@ -24,7 +24,7 @@
     <string name="cantidad_ganada">Cantidad ganada</string>
     <string name="trabajos_realizados">Trabajos realizados</string>
     <string name="promedio">Promedio por trabajo</string>
-    <string name="marcas_top">Marcas más reparadas</string>
+    <string name="marcas_top">Marcas y modelos más reparados</string>
     <string name="tipos_top">Tipos de trabajo más realizados</string>
     <string name="sin_datos">Sin datos en este período</string>
     <string name="cargando">Cargando…</string>
