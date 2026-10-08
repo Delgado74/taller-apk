@@ -37,6 +37,7 @@ import com.apklachy.app.data.TipoTrabajo
 import com.apklachy.app.ui.AppViewModel
 import com.apklachy.app.ui.componentes.FormularioReparacion
 import com.apklachy.app.util.Formato
+import com.apklachy.app.util.Marcas
 import java.util.Locale
 
 @Composable
@@ -191,7 +192,12 @@ private fun DialogoEditar(
     onGuardar: (Reparacion) -> Unit,
     onCancelar: () -> Unit
 ) {
-    var marca by rememberSaveable(reparacion.id) { mutableStateOf(reparacion.marca) }
+    val (marcaInicial, modeloInicial) = remember(reparacion.id) {
+        Marcas.separar(reparacion.marca)
+    }
+
+    var marca by rememberSaveable(reparacion.id) { mutableStateOf(marcaInicial) }
+    var modelo by rememberSaveable(reparacion.id) { mutableStateOf(modeloInicial) }
     var tipoNombre by rememberSaveable(reparacion.id) { mutableStateOf(reparacion.tipo.name) }
     var precio by rememberSaveable(reparacion.id) {
         mutableStateOf(String.format(Locale.US, "%.2f", reparacion.precio))
@@ -206,6 +212,8 @@ private fun DialogoEditar(
             FormularioReparacion(
                 marca = marca,
                 onMarca = { marca = it; errorMarca = false },
+                modelo = modelo,
+                onModelo = { modelo = it },
                 errorMarca = errorMarca,
                 tipo = TipoTrabajo.desdeNombre(tipoNombre),
                 onTipo = { tipoNombre = it.name },
@@ -224,7 +232,9 @@ private fun DialogoEditar(
                     if (!errorMarca && !errorPrecio && monto != null) {
                         onGuardar(
                             reparacion.copy(
-                                marca = marca.trim(),
+                                marca = listOf(marca.trim(), modelo.trim())
+                                    .filter { it.isNotEmpty() }
+                                    .joinToString(" "),
                                 tipo = TipoTrabajo.desdeNombre(tipoNombre),
                                 precio = monto
                             )

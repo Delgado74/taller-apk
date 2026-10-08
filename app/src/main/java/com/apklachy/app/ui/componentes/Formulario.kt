@@ -11,8 +11,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,56 +33,71 @@ import com.apklachy.app.R
 import com.apklachy.app.data.TipoTrabajo
 import com.apklachy.app.util.Marcas
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampoMarca(
+private fun CampoAutocompletado(
     valor: String,
-    onCambio: (String) -> Unit,
+    onValor: (String) -> Unit,
+    opciones: List<String>,
+    etiqueta: String,
+    ayuda: String? = null,
     error: Boolean,
     modifier: Modifier = Modifier
 ) {
     var expandido by remember { mutableStateOf(false) }
-    val interaccion = remember { MutableInteractionSource() }
-    val presionado by interaccion.collectIsPressedAsState()
+    val sugerencias = remember(valor, opciones) { Marcas.filtrar(valor, opciones) }
 
-    LaunchedEffect(presionado) {
-        if (presionado) expandido = true
-    }
-
-    val sugerencias = remember(valor) { Marcas.buscar(valor) }
-
-    Box(modifier = modifier.fillMaxWidth()) {
+    ExposedDropdownMenuBox(
+        expanded = expandido,
+        onExpandedChange = { expandido = it },
+        modifier = modifier
+    ) {
         OutlinedTextField(
             value = valor,
             onValueChange = { nuevo ->
-                onCambio(nuevo)
+                onValor(nuevo)
                 expandido = true
             },
-            label = { Text(stringResource(R.string.campo_marca)) },
+            label = { Text(etiqueta) },
             isError = error,
             singleLine = true,
-            interactionSource = interaccion,
+            supportingText = ayuda?.let { texto ->
+                {
+                    Text(
+                        text = texto,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            },
             trailingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.ArrowDropDown,
-                    contentDescription = null
-                )
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandido)
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged { estado ->
-                    if (estado.isFocused) expandido = true
-                }
+                .menuAnchor(MenuAnchorType.PrimaryEditable)
         )
 
-        DropdownMenu(
-            expanded = expandido && sugerencias.isNotEmpty(),
+        ExposedDropdownMenu(
+            expanded = expandido,
             onDismissRequest = { expandido = false }
         ) {
+            if (sugerencias.isEmpty()) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = stringResource(R.string.sin_coincidencias),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
+                    onClick = { expandido = false }
+                )
+            }
+
             sugerencias.forEach { opcion ->
                 DropdownMenuItem(
                     text = { Text(opcion) },
                     onClick = {
-                        onCambio(opcion)
+                        onValor(opcion)
                         expandido = false
                     }
                 )
@@ -159,6 +177,8 @@ fun CampoPrecio(
 fun FormularioReparacion(
     marca: String,
     onMarca: (String) -> Unit,
+    modelo: String,
+    onModelo: (String) -> Unit,
     errorMarca: Boolean,
     tipo: TipoTrabajo,
     onTipo: (TipoTrabajo) -> Unit,
@@ -167,13 +187,27 @@ fun FormularioReparacion(
     errorPrecio: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val modelosDeLaMarca = remember(marca) { Marcas.modelosDe(marca) }
+    val ayudaModelo = stringResource(
+        if (modelosDeLaMarca.isEmpty()) {
+            R.string.ayuda_modelo_sin_marca
+        } else {
+            R.string.ayuda_modelo
+        }
+    )
+
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        CampoMarca(
+        CampoAutocompletado(
             valor = marca,
-            onCambio = onMarca,
+            onValor = { nuevo ->
+                if (!nuevo.equals(marca, ignoreCase = true)) onModelo("")
+                onMarca(nuevo)
+            },
+            opciones = Marcas.MARCAS,
+            etiqueta = stringResource(R.string.campo_marca),
             error = errorMarca
         )
         if (errorMarca) {
@@ -183,6 +217,15 @@ fun FormularioReparacion(
                 style = MaterialTheme.typography.bodySmall
             )
         }
+
+        CampoAutocompletado(
+            valor = modelo,
+            onValor = onModelo,
+            opciones = modelosDeLaMarca,
+            etiqueta = stringResource(R.string.campo_modelo),
+            ayuda = ayudaModelo,
+            error = false
+        )
 
         CampoTipo(valor = tipo, onCambio = onTipo)
 

@@ -39,6 +39,7 @@ fun RegistroScreen(
     modifier: Modifier = Modifier
 ) {
     var marca by rememberSaveable { mutableStateOf("") }
+    var modelo by rememberSaveable { mutableStateOf("") }
     var tipoNombre by rememberSaveable { mutableStateOf(TipoTrabajo.MODULO.name) }
     var precio by rememberSaveable { mutableStateOf("") }
     var errorMarca by rememberSaveable { mutableStateOf(false) }
@@ -76,6 +77,8 @@ fun RegistroScreen(
         FormularioReparacion(
             marca = marca,
             onMarca = { marca = it; errorMarca = false },
+            modelo = modelo,
+            onModelo = { modelo = it },
             errorMarca = errorMarca,
             tipo = TipoTrabajo.desdeNombre(tipoNombre),
             onTipo = { tipoNombre = it.name },
@@ -100,8 +103,9 @@ fun RegistroScreen(
                 errorPrecio = monto == null || monto <= 0.0
 
                 if (!errorMarca && !errorPrecio && monto != null) {
-                    viewModel.guardar(marca.trim(), TipoTrabajo.desdeNombre(tipoNombre), monto)
+                    viewModel.guardar(marca.trim(), modelo.trim(), TipoTrabajo.desdeNombre(tipoNombre), monto)
                     marca = ""
+                    modelo = ""
                     precio = ""
                     aviso = true
                 }

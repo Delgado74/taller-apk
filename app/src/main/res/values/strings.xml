@@ -8,12 +8,16 @@
 
     <string name="registro_titulo">Registrar trabajo</string>
     <string name="registro_fecha">Fecha: %1$s</string>
-    <string name="campo_marca">Marca y modelo</string>
+    <string name="campo_marca">Marca</string>
+    <string name="campo_modelo">Serie / modelo</string>
+    <string name="ayuda_modelo">Escribe o elige un modelo de la marca</string>
+    <string name="ayuda_modelo_sin_marca">Elige primero la marca</string>
+    <string name="sin_coincidencias">Sin coincidencias</string>
     <string name="campo_tipo">Tipo de trabajo</string>
     <string name="campo_precio">Precio</string>
     <string name="boton_guardar">Guardar</string>
     <string name="aviso_guardado">Trabajo guardado</string>
-    <string name="error_marca">Escribe o selecciona la marca y el modelo</string>
+    <string name="error_marca">Escribe o selecciona la marca</string>
     <string name="error_precio">Introduce un precio válido</string>
 
     <string name="estadisticas_titulo">Estadísticas</string>
