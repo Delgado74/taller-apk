@@ -40,7 +40,7 @@ private val pestanas = listOf(
 fun ApklachyUi() {
     ApklachyTheme {
         val viewModel: AppViewModel = viewModel(factory = AppViewModel.Factory)
-        var seleccionada by rememberSaveable { mutableIntStateOf(0) }
+        var seleccionada by rememberSaveable { mutableStateOf(0) }
 
         Scaffold(
             bottomBar = {
