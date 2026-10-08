@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Apklachy</string>
+
+    <string name="nav_registro">Registrar</string>
+    <string name="nav_estadisticas">Estadísticas</string>
+    <string name="nav_historial">Historial</string>
+
+    <string name="registro_titulo">Registrar trabajo</string>
+    <string name="registro_fecha">Fecha: %1$s</string>
+    <string name="campo_marca">Marca del teléfono</string>
+    <string name="campo_tipo">Tipo de trabajo</string>
+    <string name="campo_precio">Precio</string>
+    <string name="boton_guardar">Guardar</string>
+    <string name="aviso_guardado">Trabajo guardado</string>
+    <string name="error_marca">Escribe o selecciona la marca</string>
+    <string name="error_precio">Introduce un precio válido</string>
+
+    <string name="estadisticas_titulo">Estadísticas</string>
+    <string name="periodo_dia">Día</string>
+    <string name="periodo_semana">Semana</string>
+    <string name="periodo_mes">Mes</string>
+    <string name="periodo_actual">Actual</string>
+    <string name="cantidad_ganada">Cantidad ganada</string>
+    <string name="trabajos_realizados">Trabajos realizados</string>
+    <string name="promedio">Promedio por trabajo</string>
+    <string name="marcas_top">Marcas más reparadas</string>
+    <string name="tipos_top">Tipos de trabajo más realizados</string>
+    <string name="sin_datos">Sin datos en este período</string>
+    <string name="cargando">Cargando…</string>
+
+    <string name="historial_titulo">Historial</string>
+    <string name="historial_vacio">Aún no hay trabajos registrados</string>
+    <string name="trabajos_unidad">trabajos</string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="guardar_cambios">Guardar cambios</string>
+    <string name="confirmar_eliminar">¿Eliminar este trabajo?</string>
+    <string name="editar_titulo">Editar trabajo</string>
+</resources>
