@@ -11,10 +11,20 @@ enum class TipoTrabajo(val etiqueta: String) {
     BROCHE("Broche");
 
     companion object {
-        fun desdeEtiqueta(texto: String): TipoTrabajo =
-            entries.firstOrNull { it.etiqueta.equals(texto, ignoreCase = true) } ?: MODULO
+        val etiquetas: List<String> = entries.map { it.etiqueta }
 
-        fun desdeNombre(nombre: String): TipoTrabajo =
-            entries.firstOrNull { it.name == nombre } ?: MODULO
+        private fun conocer(valor: String): TipoTrabajo? {
+            val limpio = valor.trim()
+            return entries.firstOrNull {
+                it.name.equals(limpio, ignoreCase = true) ||
+                    it.etiqueta.equals(limpio, ignoreCase = true)
+            }
+        }
+
+        fun normalizar(valor: String): String =
+            conocer(valor)?.name ?: valor.trim()
+
+        fun etiquetaDe(valor: String): String =
+            conocer(valor)?.etiqueta ?: valor.trim()
     }
 }

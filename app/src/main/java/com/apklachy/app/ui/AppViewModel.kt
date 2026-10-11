@@ -32,7 +32,7 @@ class AppViewModel(aplicacion: ApklachyApp) : AndroidViewModel(aplicacion) {
     private val _cargando = MutableStateFlow(false)
     val cargando: StateFlow<Boolean> = _cargando.asStateFlow()
 
-    fun guardar(marca: String, modelo: String, tipo: TipoTrabajo, precio: Double) {
+    fun guardar(marca: String, modelo: String, tipo: String, precio: Double) {
         viewModelScope.launch {
             repositorio.guardar(marca, modelo, tipo, precio)
         }

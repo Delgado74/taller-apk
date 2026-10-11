@@ -14,6 +14,8 @@
     <string name="ayuda_modelo_sin_marca">Elige primero la marca</string>
     <string name="sin_coincidencias">Sin coincidencias</string>
     <string name="campo_tipo">Tipo de trabajo</string>
+    <string name="ayuda_tipo">Escribe o elige un tipo de trabajo</string>
+    <string name="error_tipo">Escribe o selecciona el tipo de trabajo</string>
     <string name="campo_precio">Precio</string>
     <string name="boton_guardar">Guardar</string>
     <string name="aviso_guardado">Trabajo guardado</string>

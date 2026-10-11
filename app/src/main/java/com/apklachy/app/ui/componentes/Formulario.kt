@@ -1,26 +1,18 @@
 package com.apklachy.app.ui.componentes
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -108,49 +100,20 @@ private fun CampoAutocompletado(
 
 @Composable
 fun CampoTipo(
-    valor: TipoTrabajo,
-    onCambio: (TipoTrabajo) -> Unit,
+    valor: String,
+    onCambio: (String) -> Unit,
+    error: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var expandido by remember { mutableStateOf(false) }
-    val interaccion = remember { MutableInteractionSource() }
-    val presionado by interaccion.collectIsPressedAsState()
-
-    LaunchedEffect(presionado) {
-        if (presionado) expandido = true
-    }
-
-    Box(modifier = modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = valor.etiqueta,
-            onValueChange = {},
-            readOnly = true,
-            interactionSource = interaccion,
-            label = { Text(stringResource(R.string.campo_tipo)) },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.ArrowDropDown,
-                    contentDescription = null
-                )
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        DropdownMenu(
-            expanded = expandido,
-            onDismissRequest = { expandido = false }
-        ) {
-            TipoTrabajo.entries.forEach { tipo ->
-                DropdownMenuItem(
-                    text = { Text(tipo.etiqueta) },
-                    onClick = {
-                        onCambio(tipo)
-                        expandido = false
-                    }
-                )
-            }
-        }
-    }
+    CampoAutocompletado(
+        valor = valor,
+        onValor = onCambio,
+        opciones = TipoTrabajo.etiquetas,
+        etiqueta = stringResource(R.string.campo_tipo),
+        ayuda = stringResource(R.string.ayuda_tipo),
+        error = error,
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -180,8 +143,9 @@ fun FormularioReparacion(
     modelo: String,
     onModelo: (String) -> Unit,
     errorMarca: Boolean,
-    tipo: TipoTrabajo,
-    onTipo: (TipoTrabajo) -> Unit,
+    tipo: String,
+    onTipo: (String) -> Unit,
+    errorTipo: Boolean,
     precio: String,
     onPrecio: (String) -> Unit,
     errorPrecio: Boolean,
@@ -227,7 +191,14 @@ fun FormularioReparacion(
             error = false
         )
 
-        CampoTipo(valor = tipo, onCambio = onTipo)
+        CampoTipo(valor = tipo, onCambio = onTipo, error = errorTipo)
+        if (errorTipo) {
+            Text(
+                text = stringResource(R.string.error_tipo),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
         CampoPrecio(
             valor = precio,

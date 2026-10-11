@@ -8,7 +8,7 @@ data class Reparacion(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val marca: String,
-    val tipo: TipoTrabajo,
+    val tipo: String,
     val precio: Double,
     val fecha: Long
 )

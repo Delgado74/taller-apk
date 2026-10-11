@@ -180,7 +180,7 @@ private fun ContenidoEstadisticas(datos: Estadisticas) {
     TarjetaRanking(
         titulo = R.string.tipos_top,
         datos = datos.tipos,
-        etiqueta = { TipoTrabajo.desdeNombre(it).etiqueta }
+        etiqueta = { TipoTrabajo.etiquetaDe(it) }
     )
 }
 

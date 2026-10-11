@@ -151,7 +151,7 @@ private fun FilaReparacion(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = reparacion.tipo.etiqueta,
+                    text = TipoTrabajo.etiquetaDe(reparacion.tipo),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -198,11 +198,12 @@ private fun DialogoEditar(
 
     var marca by rememberSaveable(reparacion.id) { mutableStateOf(marcaInicial) }
     var modelo by rememberSaveable(reparacion.id) { mutableStateOf(modeloInicial) }
-    var tipoNombre by rememberSaveable(reparacion.id) { mutableStateOf(reparacion.tipo.name) }
+    var tipo by rememberSaveable(reparacion.id) { mutableStateOf(TipoTrabajo.etiquetaDe(reparacion.tipo)) }
     var precio by rememberSaveable(reparacion.id) {
         mutableStateOf(String.format(Locale.US, "%.2f", reparacion.precio))
     }
     var errorMarca by rememberSaveable(reparacion.id) { mutableStateOf(false) }
+    var errorTipo by rememberSaveable(reparacion.id) { mutableStateOf(false) }
     var errorPrecio by rememberSaveable(reparacion.id) { mutableStateOf(false) }
 
     AlertDialog(
@@ -215,8 +216,9 @@ private fun DialogoEditar(
                 modelo = modelo,
                 onModelo = { modelo = it },
                 errorMarca = errorMarca,
-                tipo = TipoTrabajo.desdeNombre(tipoNombre),
-                onTipo = { tipoNombre = it.name },
+                tipo = tipo,
+                onTipo = { tipo = it; errorTipo = false },
+                errorTipo = errorTipo,
                 precio = precio,
                 onPrecio = { precio = it; errorPrecio = false },
                 errorPrecio = errorPrecio
@@ -227,15 +229,16 @@ private fun DialogoEditar(
                 onClick = {
                     val monto = precio.replace(',', '.').toDoubleOrNull()
                     errorMarca = marca.isBlank()
+                    errorTipo = tipo.isBlank()
                     errorPrecio = monto == null || monto <= 0.0
 
-                    if (!errorMarca && !errorPrecio && monto != null) {
+                    if (!errorMarca && !errorTipo && !errorPrecio && monto != null) {
                         onGuardar(
                             reparacion.copy(
                                 marca = listOf(marca.trim(), modelo.trim())
                                     .filter { it.isNotEmpty() }
                                     .joinToString(" "),
-                                tipo = TipoTrabajo.desdeNombre(tipoNombre),
+                                tipo = TipoTrabajo.normalizar(tipo),
                                 precio = monto
                             )
                         )

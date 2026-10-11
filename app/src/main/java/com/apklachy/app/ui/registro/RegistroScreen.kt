@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.apklachy.app.R
-import com.apklachy.app.data.TipoTrabajo
 import com.apklachy.app.ui.AppViewModel
 import com.apklachy.app.ui.componentes.FormularioReparacion
 import com.apklachy.app.util.Formato
@@ -40,9 +39,10 @@ fun RegistroScreen(
 ) {
     var marca by rememberSaveable { mutableStateOf("") }
     var modelo by rememberSaveable { mutableStateOf("") }
-    var tipoNombre by rememberSaveable { mutableStateOf(TipoTrabajo.MODULO.name) }
+    var tipo by rememberSaveable { mutableStateOf("") }
     var precio by rememberSaveable { mutableStateOf("") }
     var errorMarca by rememberSaveable { mutableStateOf(false) }
+    var errorTipo by rememberSaveable { mutableStateOf(false) }
     var errorPrecio by rememberSaveable { mutableStateOf(false) }
     var aviso by rememberSaveable { mutableStateOf(false) }
 
@@ -80,8 +80,9 @@ fun RegistroScreen(
             modelo = modelo,
             onModelo = { modelo = it },
             errorMarca = errorMarca,
-            tipo = TipoTrabajo.desdeNombre(tipoNombre),
-            onTipo = { tipoNombre = it.name },
+            tipo = tipo,
+            onTipo = { tipo = it; errorTipo = false },
+            errorTipo = errorTipo,
             precio = precio,
             onPrecio = { precio = it; errorPrecio = false },
             errorPrecio = errorPrecio
@@ -100,12 +101,14 @@ fun RegistroScreen(
             onClick = {
                 val monto = precio.replace(',', '.').toDoubleOrNull()
                 errorMarca = marca.isBlank()
+                errorTipo = tipo.isBlank()
                 errorPrecio = monto == null || monto <= 0.0
 
-                if (!errorMarca && !errorPrecio && monto != null) {
-                    viewModel.guardar(marca.trim(), modelo.trim(), TipoTrabajo.desdeNombre(tipoNombre), monto)
+                if (!errorMarca && !errorTipo && !errorPrecio && monto != null) {
+                    viewModel.guardar(marca.trim(), modelo.trim(), tipo.trim(), monto)
                     marca = ""
                     modelo = ""
+                    tipo = ""
                     precio = ""
                     aviso = true
                 }

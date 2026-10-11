@@ -16,12 +16,12 @@ class Repositorio(private val dao: ReparacionDao) {
 
     fun todos(): Flow<List<Reparacion>> = dao.todos()
 
-    suspend fun guardar(marca: String, modelo: String, tipo: TipoTrabajo, precio: Double): Long {
+    suspend fun guardar(marca: String, modelo: String, tipo: String, precio: Double): Long {
         val reparacion = Reparacion(
             marca = listOf(marca.trim(), modelo.trim())
                 .filter { it.isNotEmpty() }
                 .joinToString(" "),
-            tipo = tipo,
+            tipo = TipoTrabajo.normalizar(tipo),
             precio = precio,
             fecha = System.currentTimeMillis()
         )
